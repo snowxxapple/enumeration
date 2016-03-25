@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!-- 枚举算法：利用for循环列举出所有可能事件 然后用if语句判断我要找的目标
+利用了事件委托：将列表项单击事件加到了父级ul上，但是此时的事件处理程序的this会指向ul，要应用真正的事件源：event.target，在IE下,ev.srcElement，因此要考虑兼容性写法。用js进行了动态节点的建立，加入内容，添加到DOM中，删除节点 -->
+<head>
+    <meta charset="utf-8">
+    <title>枚举算法</title>
+</head>
+<style type="text/css">
+#ul1 {
+    list-style: none;
+}
+
+#ul1 li {
+    display: inline-block;
+}
+</style>
+
+<body>
+    <ul id='ul1'>
+        <li><a href="javascript:;">北京</a></li>
+        <li><a href="javascript:;">上海</a></li>
+        <li><a href="javascript:;">沈阳</a></li>
+        <li><a href="javascript:;">天津</a></li>
+        <li><a href="javascript:;">杭州</a></li>
+        <li><a href="javascript:;">西安</a></li>
+        <li><a href="javascript:;">成都</a></li>
+    </ul>
+    <ul id='ul2'></ul>
+</body>
+<script type="text/javascript">
+function mj1(value) {
+    var flag = true;
+    var oLi = document.getElementById('ul2').getElementsByTagName('li');
+    for (var i = 0; i < oLi.length; i++) {
+        if (value == oLi[i].innerHTML) {
+            flag = false;
+        }
+    }
+    return flag;
+}
+
+function mj2(value) {
+    var oUl2 = document.getElementById('ul2');
+    var oLi = document.getElementById('ul2').getElementsByTagName('li');
+    for (var i = 0; i < oLi.length; i++) {
+        if (value == oLi[i].innerHTML) {
+            oUl2.removeChild(oLi[i]);
+            aLi=document.createElement('li');
+            aLi.innerHTML=value;
+            if(oLi.length==0){
+            	oUl2.appendChild(aLi);
+            }
+            else{
+            	oUl2.insertBefore(aLi,oLi[0]);
+            }
+        }
+    }
+}
+window.onload = function() {
+    var oUl2 = document.getElementById('ul2');
+    var oUl1 = document.getElementById('ul1');
+    oUl1.onclick = function(event) {
+        var ev = event || window.event;
+        var target = ev.target || ev.srcElement; //target是触发事件的真正事件源 this是指的oUl
+        if (mj1(target.innerHTML)) { //如果ul2里面没添加过
+            oLi = document.createElement('li');
+            oLi.innerHTML = target.innerHTML;
+            if (oUl2.length == 0) {
+                oUl2.appendChild(oLi);
+            } else {
+                var aLi = oUl2.getElementsByTagName('li');
+                oUl2.insertBefore(oLi, aLi[0]);
+            }
+        } else { //如果已经在ul2里面添加过了
+             mj2(target.innerHTML);
+        }
+    }
+}
+</script>
+
+</html>
